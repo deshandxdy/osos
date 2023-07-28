@@ -4,7 +4,7 @@ namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'max:255', 'string'],
-            'last_name' => ['required', 'max:255', 'string'],
-            'email' => ['required', 'unique:users,email', 'email'],
-            'password' => ['required', 'confirmed'],
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required',
         ];
     }
 }
