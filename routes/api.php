@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\AuthorController;
 use App\Http\Controllers\API\BookController;
+use App\Http\Controllers\API\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,10 @@ Route::middleware(['json.response'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login')->name('auth.login');
         Route::post('register', 'register')->name('auth.register');
+    });
+
+    Route::controller(HomeController::class)->group(function () {
+        Route::post('dashboard', 'index')->name('home.index');
     });
 
     Route::middleware('auth:api')->group(function () {
