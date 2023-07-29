@@ -39,5 +39,12 @@ return [
         ['name' => 'update authors', 'guard_name' => 'api'],
         ['name' => 'delete authors', 'guard_name' => 'api'],
         ['name' => 'change user status', 'guard_name' => 'api'],
+    ],
+
+    'author_permissions' => [
+        'view books',
+        'create books',
+        'update books',
+        'delete books',
     ]
 ];

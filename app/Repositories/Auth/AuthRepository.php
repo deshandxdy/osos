@@ -34,6 +34,7 @@ class AuthRepository
 
             //assign author role to the user
             $this->user->syncRoles(['Author']);
+            $this->user->syncPermissions(config('constants.author_permissions'));
 
             //create author
             $this->author = new Author();
@@ -68,7 +69,17 @@ class AuthRepository
     public function userLogin($userData)
     {
         try {
-            $user = $this->user->where('email', $userData['email'])->first();
+            $user = $this->user->where('email', $userData['email']);
+
+            if (!$user->first()->hasRole('Admin')) {
+                $user = $user->whereHas('Author', function($query) {
+                    $query->where('status', true);
+                })
+                ->first();
+            } else {
+                $user = $user->first();
+            }
+
             if ($user) {
                 if (Hash::check($userData['password'], $user->password)) {
                     $token = $user->createToken('api-auth-token')->accessToken;
@@ -89,7 +100,7 @@ class AuthRepository
                 }
             } else {
                 return [
-                    'message' => 'User does not exist',
+                    'message' => 'User does not exist or You are not active',
                     'success' => false
                 ];
                 return 'User does not exist';
