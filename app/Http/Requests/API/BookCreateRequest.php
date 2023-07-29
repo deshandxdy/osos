@@ -4,14 +4,14 @@ namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class BookCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->hasPermissionTo('create books');
     }
 
     /**
@@ -22,10 +22,12 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'max:255', 'string'],
-            'last_name' => ['required', 'max:255', 'string'],
-            'email' => ['required', 'unique:users,email', 'email'],
-            'password' => ['required', 'confirmed'],
+            'author_id' => 'required|exists:authors,id',
+            'isbn' => 'required',
+            'title' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'cover_image' => 'required|image|max:1024',
         ];
     }
 }
