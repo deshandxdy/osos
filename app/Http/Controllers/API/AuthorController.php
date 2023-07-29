@@ -22,6 +22,13 @@ class AuthorController extends Controller
         try {
             $authors = $this->authorRepository->getAllAuthors();
 
+            if($authors->isEmpty()){
+                return response()->json([
+                    'message' => 'No authors found',
+                    'books' => []
+                ], 404);
+            }
+
             return response()->json([
                 'authors' => new AuthorResource($authors),
             ], 200);
