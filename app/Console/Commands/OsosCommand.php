@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class OsosCommand extends Command
 {
@@ -49,8 +50,12 @@ class OsosCommand extends Command
 
     protected function defaultSetUp()
     {
-        $this->createAdmin();
+        Artisan::call('passport:install');
+        $this->info('Passport Installed');
         $this->insertDefaultRolesAndPermissions();
+        $this->info('Roles and permissions created');
+        $this->createAdmin();
+        $this->info('Admin Created');
         $this->info('Default data setted successfully');
     }
 
@@ -66,6 +71,9 @@ class OsosCommand extends Command
             'password' => bcrypt(env("ADMIN_PASSWORD", "admin1234")), // password
         ]);
 
+        $user->createToken('api-auth-token')->accessToken;
+        $user->syncRoles(['Admin']);
+
     }
 
     protected function insertDefaultRolesAndPermissions()
@@ -73,12 +81,19 @@ class OsosCommand extends Command
         $roles = config('constants.roles');
         $permissions = config('constants.permissions');
 
+        // Reset cached roles and permissions
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
         foreach ($roles as  $role) {
-           Role::create($role);
+            Role::firstOrCreate([
+                'name'   => $role['name'],
+            ], $role);
         }
 
         foreach ($permissions as  $permission) {
-            Permission::create($permission);
+            Permission::firstOrCreate([
+                'name'   => $permission['name'],
+            ], $permission);
          }
     }
 }
