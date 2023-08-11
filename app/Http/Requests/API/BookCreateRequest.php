@@ -26,7 +26,7 @@ class BookCreateRequest extends FormRequest
             'isbn' => 'required',
             'title' => 'required',
             'description' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric',
             'cover_image' => 'required|image|max:1024',
         ];
     }

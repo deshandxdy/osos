@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use App\Repositories\Book\BookRepository;
-use Symfony\Component\Console\Input\Input;
 use App\Http\Requests\API\BookCreateRequest;
 
 class BookController extends Controller
@@ -32,7 +31,7 @@ class BookController extends Controller
             }
 
             return response()->json([
-                'books' => new BookResource($books),
+                'books' => BookResource::collection($books),
             ], 200);
 
         } catch (\Exception $e) {
@@ -48,9 +47,10 @@ class BookController extends Controller
         $data = $bookCreateRequest->validated();
 
         if ($bookCreateRequest->hasFile('cover_image')) {
-            $image = $bookCreateRequest->file('cover_image')->store('cover_image/public');
+            $file_name = $bookCreateRequest->file('cover_image')->hashName();
+            $bookCreateRequest->file('cover_image')->storePubliclyAs('public/cover_images', $file_name);
             //$image = "data:image/png;base64,".base64_encode(file_get_contents($bookCreateRequest->file('cover_image')->path()));
-            $data['cover_image'] = $image;
+            $data['cover_image'] = $file_name;
         }
 
         $book = $this->bookRepository->createBook($data);
