@@ -51,6 +51,7 @@ class AuthController extends Controller
                     'message' => 'User logged in successfully',
                     'user' => new UserResource($result['user']),
                     'author' => new AuthorResource($result['author']),
+                    'role' => $result['role'],
                     'token' => $result['token'],
                 ], 200);
             }

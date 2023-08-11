@@ -89,6 +89,7 @@ class AuthRepository
                         'user' => $user,
                         'author' => $author,
                         'token' => $token,
+                        'role' => $user->getRoleNames()->first(),
                         'success' => true
                     ];
 
