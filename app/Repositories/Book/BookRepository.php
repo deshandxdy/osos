@@ -26,7 +26,7 @@ class BookRepository
                         $q->orWhere('last_name', 'like', "%{$search}%");
                     });
                 })
-                ->paginate();
+                ->get();
 
         } catch(\Exception $e) {
             return response()->json([
