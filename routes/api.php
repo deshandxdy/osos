@@ -26,6 +26,10 @@ Route::middleware(['json.response'])->group(function () {
         Route::post('dashboard', 'index')->name('home.index');
     });
 
+    Route::controller(BookController::class)->group(function () {
+        Route::get('books', 'index')->name('book.index');
+    });
+
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
@@ -35,8 +39,9 @@ Route::middleware(['json.response'])->group(function () {
         });
 
         Route::controller(BookController::class)->group(function () {
-            Route::get('books', 'index')->name('book.index')->middleware('permission:view books');
+            Route::get('author-books', 'getAuthorBooks')->name('book.getAuthorBooks')->middleware('permission:view books');
             Route::post('create-book', 'store')->name('book.store')->middleware('permission:create books');
+            Route::post('update-book', 'update')->name('book.update')->middleware('permission:update books');
         });
     });
 });

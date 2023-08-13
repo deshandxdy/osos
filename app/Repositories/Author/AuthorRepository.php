@@ -14,7 +14,7 @@ class AuthorRepository
     public function getAllAuthors()
     {
         try {
-            return $this->author->with('user', 'books')->paginate();
+            return $this->author->with('user', 'books')->get();
 
         } catch(\Exception $e) {
             return response()->json([
@@ -26,6 +26,7 @@ class AuthorRepository
 
     public function changeAuthorStatus($data)
     {
+
         try {
             $author = $this->author->findOrFail($data['author_id']);
             $author->status = $data['status'];
