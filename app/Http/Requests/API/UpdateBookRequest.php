@@ -4,18 +4,14 @@ namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AuthorStatusRequest extends FormRequest
+class UpdateBookRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        if ($this->user()->hasRole('Admin') || $this->user()->hasPermissionTo('change user status')) {
-            return true;
-        }
-
-        return false;
+        return $this->user()->hasPermissionTo('update books');
     }
 
     /**
@@ -26,8 +22,12 @@ class AuthorStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'author_id' => 'required|exists:authors,id|numeric',
-            'status' => 'required|boolean'
+            'book_id' => 'required|exists:books,id',
+            'isbn' => 'required',
+            'title' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'cover_image' => 'sometimes|nullable|image|max:1024',
         ];
     }
 }
